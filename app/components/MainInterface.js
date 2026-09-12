@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react"
 import {
   Sparkles,
   Leaf,
-  ImagePlus,
+  UploadCloud,
   X,
   History,
   Info,
@@ -10,7 +10,7 @@ import {
   PlusCircle,
   Menu,
   ChevronRight,
-  SendHorizonal,
+  AlertCircle,
 } from "lucide-react"
 import { Link } from "react-router-dom"
 import Axios from "axios"
@@ -77,7 +77,7 @@ export default function MainInterface() {
       draft.isGeneratingResponse = true
       draft.messages.push({
         role: "user",
-        content: "Submitted leaf specimen",
+        content: "Submitted specimen for pathology diagnosis",
         imagePreview: currentPreview,
       })
       draft.messages.push({ role: "assistant", status: "loading" })
@@ -120,7 +120,7 @@ export default function MainInterface() {
         draft.messages.push({
           role: "assistant",
           content:
-            "⚠️ **Analysis Interrupted:** Unable to process image scan. Please verify backend connection.",
+            "⚠️ Analysis Interrupted: Unable to process image scan. Please verify backend connection.",
         })
         draft.isGeneratingResponse = false
       })
@@ -163,9 +163,9 @@ export default function MainInterface() {
           )}
         </AnimatePresence>
 
-        {/* Sidebar */}
+        {/* Persistent Desktop Sidebar */}
         <aside
-          className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col justify-between border-r border-zinc-800/80 p-5 transition-transform duration-300 lg:static lg:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-50 flex w-72 shrink-0 flex-col justify-between border-r border-zinc-800/80 p-5 transition-transform duration-300 lg:static lg:translate-x-0 ${
             state.isSideBarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           style={{ backgroundColor: "#111512" }}
@@ -201,12 +201,7 @@ export default function MainInterface() {
             </div>
 
             <button
-              onClick={() => {
-                handleResetChat()
-                setState(d => {
-                  d.isSideBarOpen = false
-                })
-              }}
+              onClick={handleResetChat}
               className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-950/40 px-4 py-2.5 text-sm font-medium text-emerald-300 hover:bg-emerald-900/50 transition shadow-sm"
             >
               <PlusCircle size={16} />
@@ -218,12 +213,7 @@ export default function MainInterface() {
                 Workspace
               </span>
               <button
-                onClick={() => {
-                  handleResetChat()
-                  setState(d => {
-                    d.isSideBarOpen = false
-                  })
-                }}
+                onClick={handleResetChat}
                 className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800/60 hover:text-white transition"
               >
                 <div className="flex items-center gap-3">
@@ -253,7 +243,7 @@ export default function MainInterface() {
               <ShieldCheck size={14} />
               Model Active & Calibrated
             </div>
-            <p className="leading-relaxed text-zinc-500 text-[11px]">
+            <p className="leading-relaxed text-zinc-500">
               Trained on multi-class crop datasets for blight, chlorosis, and
               rust detection.
             </p>
@@ -262,52 +252,51 @@ export default function MainInterface() {
 
         {/* Main Work Area */}
         <main
-          className="flex flex-1 flex-col h-full overflow-hidden"
+          className="flex flex-1 flex-col h-full w-full min-w-0 overflow-hidden"
           style={{ backgroundColor: "#0e120f" }}
         >
-          {/* Header Bar - Scaled down for mobile */}
+          {/* Header */}
           <header
-            className="flex h-12 lg:h-14 shrink-0 items-center justify-between border-b border-zinc-800/80 px-3.5 lg:px-6 backdrop-blur-md"
+            className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-800/80 px-4 sm:px-6 backdrop-blur-md"
             style={{ backgroundColor: "#111512" }}
           >
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() =>
                   setState(d => {
                     d.isSideBarOpen = true
                   })
                 }
-                className="p-1 text-zinc-400 hover:text-white lg:hidden"
+                className="text-zinc-400 hover:text-white lg:hidden"
               >
                 <Menu size={20} />
               </button>
-              <span className="text-[11px] lg:text-xs font-semibold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+              <span className="text-xs font-semibold uppercase tracking-widest text-zinc-400 flex items-center gap-1.5">
                 <Sparkles size={13} className="text-emerald-400" />
                 Diagnostic Console
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
-              <span className="hidden sm:inline">Node: </span>
-              <span className="font-mono text-zinc-300">Online</span>
+              Node: <span className="font-mono text-zinc-300">Live</span>
             </div>
           </header>
 
-          {/* Chat / Content Scroll Container - Maximized with min-h-0 and tight mobile padding */}
+          {/* Full-Width Chat Scroll Container */}
           <div
             ref={chatContainer}
-            className="flex-1 min-h-0 overflow-y-auto px-3 py-3 lg:px-12 lg:py-6 space-y-4"
+            className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-6 sm:px-8 space-y-4"
             style={{ backgroundColor: "#0e120f" }}
           >
             {state.messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center text-center max-w-sm sm:max-w-md mx-auto px-2">
+              <div className="flex h-full w-full flex-col items-center justify-center text-center px-4">
                 <div
-                  className="mb-4 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border border-emerald-700/60 shadow-inner"
+                  className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-700/60 shadow-inner"
                   style={{ backgroundColor: "#141c16" }}
                 >
-                  <Leaf className="h-6 w-6 sm:h-8 sm:w-8 text-emerald-400" />
+                  <Leaf className="h-8 w-8 text-emerald-400" />
                 </div>
-                <div className="min-h-[32px] sm:min-h-[40px] text-lg sm:text-2xl font-semibold tracking-tight text-white">
+                <div className="min-h-[40px] text-xl lg:text-2xl font-semibold tracking-tight text-white">
                   <TypeIt
                     options={{
                       strings: [
@@ -321,104 +310,105 @@ export default function MainInterface() {
                     }}
                   />
                 </div>
-                <p className="mt-1.5 text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  Provide high-resolution photos displaying leaf symptoms or
-                  lesions for accurate pathological assessment.
+                <p className="mt-2 text-sm text-zinc-400 max-w-lg leading-relaxed">
+                  Provide high-resolution photos displaying leaf symptoms,
+                  discoloration, or lesions for accurate pathological
+                  assessment.
                 </p>
 
-                {/* Hints - Hidden on small mobile screens to free up space */}
-                <div className="hidden sm:grid mt-6 grid-cols-2 gap-3 text-left w-full">
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left w-full max-w-xl">
                   <div
-                    className="rounded-lg border border-zinc-800/80 p-2.5"
+                    className="rounded-lg border border-zinc-800/80 p-3"
                     style={{ backgroundColor: "#121713" }}
                   >
                     <p className="text-xs font-semibold text-zinc-200">
                       High Contrast
                     </p>
                     <p className="text-[11px] text-zinc-400 mt-0.5">
-                      Place leaf on neutral background
+                      Place leaf against a neutral background
                     </p>
                   </div>
                   <div
-                    className="rounded-lg border border-zinc-800/80 p-2.5"
+                    className="rounded-lg border border-zinc-800/80 p-3"
                     style={{ backgroundColor: "#121713" }}
                   >
                     <p className="text-xs font-semibold text-zinc-200">
                       Focus on Margins
                     </p>
                     <p className="text-[11px] text-zinc-400 mt-0.5">
-                      Capture lesions and vein borders
+                      Capture lesions and vein transitions
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
-              state.messages.map((msg, i) =>
-                msg.role === "user" ? (
-                  <UserMessage
-                    key={i}
-                    message={msg.content}
-                    imagePreview={msg.imagePreview}
-                  />
-                ) : (
-                  <ModelMessage
-                    key={i}
-                    status={msg.status}
-                    message={msg.content}
-                    loadingMessage={state.loadingMessage}
-                  />
-                ),
-              )
+              /* Stretches to 100% of the chat container */
+              <div className="w-full space-y-4">
+                {state.messages.map((msg, i) =>
+                  msg.role === "user" ? (
+                    <UserMessage
+                      key={i}
+                      message={msg.content}
+                      imagePreview={msg.imagePreview}
+                    />
+                  ) : (
+                    <ModelMessage
+                      key={i}
+                      status={msg.status}
+                      message={msg.content}
+                      loadingMessage={state.loadingMessage}
+                    />
+                  ),
+                )}
+              </div>
             )}
           </div>
 
-          {/* Bottom Compact Footer Bar */}
+          {/* Full-Width Footer Controls */}
           <footer
-            className="shrink-0 border-t border-zinc-800/80 p-2.5 lg:p-4"
+            className="shrink-0 border-t border-zinc-800/80 p-4 w-full"
             style={{ backgroundColor: "#111512" }}
           >
-            <form
-              onSubmit={handleDetectDisease}
-              className="max-w-3xl mx-auto space-y-2"
-            >
-              {/* Compact Preview Floating Bar */}
+            <form onSubmit={handleDetectDisease} className="w-full space-y-3">
               <AnimatePresence>
                 {state.preview && (
                   <motion.div
-                    initial={{ opacity: 0, y: 6 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 6 }}
-                    className="flex items-center justify-between rounded-lg border border-emerald-700/60 px-2.5 py-1.5 shadow-md"
+                    exit={{ opacity: 0, y: 8 }}
+                    className="flex items-center justify-between rounded-xl border border-emerald-700/60 p-2.5 shadow-md w-full"
                     style={{ backgroundColor: "#141c16" }}
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
                       <img
                         src={state.preview}
                         alt="Specimen preview"
-                        className="h-9 w-9 rounded-md object-cover border border-emerald-500/60 shrink-0"
+                        className="h-12 w-12 rounded-lg object-cover border border-emerald-500/60 shrink-0"
                       />
                       <div className="truncate">
                         <p className="text-xs font-medium text-emerald-200 truncate">
                           {state.selectedImage?.name || "Leaf_Sample.jpg"}
                         </p>
-                        <p className="text-[10px] text-zinc-400">
-                          Ready for inference
+                        <p className="text-[11px] text-zinc-400">
+                          {(state.selectedImage?.size / (1024 * 1024)).toFixed(
+                            2,
+                          )}{" "}
+                          MB • Ready for inference
                         </p>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={clearSelectedImage}
-                      className="rounded-md p-1 text-zinc-400 hover:bg-zinc-800 hover:text-white transition"
+                      className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white transition"
                     >
-                      <X size={15} />
+                      <X size={16} />
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* Compact Action Bar */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 w-full">
                 <input
                   ref={fileInput}
                   type="file"
@@ -427,36 +417,34 @@ export default function MainInterface() {
                   onChange={handleImageChange}
                 />
 
-                {/* Choose Image Button: Icon-only on mobile, full label on desktop */}
                 <button
                   type="button"
                   onClick={() => fileInput.current?.click()}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-zinc-700/80 p-2.5 sm:px-4 sm:py-2.5 text-xs font-medium text-zinc-200 hover:border-emerald-500 hover:bg-zinc-800 transition shadow-inner shrink-0"
+                  className="flex items-center gap-2 rounded-xl border border-zinc-700/80 px-4 py-3 text-xs font-medium text-zinc-200 hover:border-emerald-500 hover:bg-zinc-800 transition shadow-inner shrink-0"
                   style={{ backgroundColor: "#171d18" }}
-                  title="Upload leaf photo"
                 >
-                  <ImagePlus size={18} className="text-emerald-400" />
+                  <UploadCloud size={16} className="text-emerald-400" />
                   <span className="hidden sm:inline">Choose Specimen</span>
+                  <span className="sm:hidden">Upload</span>
                 </button>
 
-                {/* Status/Placeholder Info */}
-                <div className="flex-1 truncate px-1 text-[11px] sm:text-xs text-zinc-400">
+                <div className="flex-1 truncate px-2 text-xs text-zinc-400 italic">
                   {!state.selectedImage ? (
-                    <span className="truncate block">
-                      Select a photo of the affected leaf
+                    <span className="truncate flex items-center gap-1.5">
+                      <AlertCircle size={13} className="shrink-0" /> Select an
+                      image to initialize AI inference
                     </span>
                   ) : (
-                    <span className="text-emerald-400 font-medium truncate block">
-                      Image selected
+                    <span className="text-emerald-400 font-medium truncate">
+                      Specimen selected
                     </span>
                   )}
                 </div>
 
-                {/* Submit Button: Compact icon on small screens, full button on desktop */}
                 <button
                   type="submit"
                   disabled={!state.selectedImage || state.isGeneratingResponse}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 p-2.5 sm:px-5 sm:py-2.5 text-xs font-semibold text-white shadow-lg hover:bg-emerald-500 transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                  className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-semibold text-white shadow-lg hover:bg-emerald-500 transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 >
                   {state.isGeneratingResponse ? (
                     <>
@@ -466,16 +454,12 @@ export default function MainInterface() {
                         border={"2px solid #fff"}
                         borderBottom={"2px solid transparent"}
                       />
-                      <span className="hidden sm:inline">Analyzing...</span>
+                      <span>Analyzing...</span>
                     </>
                   ) : (
                     <>
-                      <span className="sm:hidden">
-                        <SendHorizonal size={17} />
-                      </span>
-                      <span className="hidden sm:inline-flex items-center gap-1.5">
-                        <Sparkles size={14} /> Run Diagnostics
-                      </span>
+                      <Sparkles size={15} />
+                      <span>Run Diagnostics</span>
                     </>
                   )}
                 </button>
