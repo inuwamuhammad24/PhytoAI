@@ -22,7 +22,7 @@ import TypeIt from "typeit-react"
 import FlashMessage from "./FlashMessage"
 import { AnimatePresence, motion } from "framer-motion"
 
-const BACKEND_URL = "http://10.15.252.246:8000"
+const BACKEND_URL = "https://pytoaibackend.onrender.com"
 
 export default function MainInterface() {
   const chatContainer = useRef(null)
